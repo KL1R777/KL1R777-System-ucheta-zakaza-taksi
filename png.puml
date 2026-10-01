@@ -1,0 +1,57 @@
+@startuml
+left to right direction
+skinparam packageStyle rectangle
+
+
+actor "Пользователь системы" as User
+actor "Пассажир" as Passenger
+actor "Таксист" as Driver
+
+
+Passenger --|> User
+Driver --|> User
+
+rectangle "Система учетов заказа такси" {
+    
+    usecase "Проверить статус заказа" as UC_CheckStatus
+    usecase "Завершить заказ" as UC_CompleteOrder
+    usecase "История заказов" as UC_History
+    usecase "Заказать такси" as UC_OrderTaxi
+    
+    usecase "Оценить поездку" as UC_RateRide
+    usecase "Указать адрес" as UC_SpecifyAddress
+    usecase "Посмотреть стоимость" as UC_ViewCost
+    usecase "Отменить заказ" as UC_CancelOrder
+    
+    usecase "Вход" as UC_Login
+    usecase "Регистрация" as UC_Register
+    usecase "Логаут" as UC_Logout
+    
+    usecase "Смотреть заказы" as UC_ViewOrders
+    usecase "Принять заказ" as UC_AcceptOrder
+    usecase "Обновить статус заказа" as UC_UpdateStatus
+}
+
+
+Passenger -- UC_CheckStatus
+Passenger -- UC_CompleteOrder
+Passenger -- UC_History
+Passenger -- UC_OrderTaxi
+
+
+User -- UC_Login
+User -- UC_Register
+User -- UC_Logout
+
+
+Driver -- UC_ViewOrders
+Driver -- UC_AcceptOrder
+
+
+UC_CheckStatus ..> UC_RateRide : <<include>>
+UC_OrderTaxi ..> UC_SpecifyAddress : <<include>>
+UC_OrderTaxi ..> UC_ViewCost : <<include>>
+UC_CancelOrder ..> UC_OrderTaxi : <<extend>>
+UC_AcceptOrder ..> UC_UpdateStatus : <<include>>
+
+@enduml
