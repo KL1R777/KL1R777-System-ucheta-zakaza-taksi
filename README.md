@@ -15,3 +15,6 @@ https://miro.com/app/board/uXjVHmRJKpU=/
 
 ![alt text](image.png)
 
+ERD-диаграмма
+![alt text](<diagram/Снимок экрана 2026-10-13 182946.png>)
+
