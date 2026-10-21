@@ -34,7 +34,7 @@ rectangle "Система учетов заказа такси" {
 
 
 Passenger -- UC_CheckStatus
-Passenger -- UC_CompleteOrder
+Driver -- UC_CompleteOrder
 Passenger -- UC_History
 Passenger -- UC_OrderTaxi
 
