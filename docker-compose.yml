@@ -4,7 +4,7 @@ name: ngtu_laba
 services:
   db:
     image: postgres:16-alpine
-    container_name: qt_postgres
+    container_name: postgres
     restart: always
     environment:
       POSTGRES_USER: myuser
