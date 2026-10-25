@@ -6,5 +6,6 @@ class Order:
     id: int
     userID: int
     price: float
+    address: str
     driverID: Optional[int]  # Может быть NULL (если водитель еще не назначен)
     orderStatus: int

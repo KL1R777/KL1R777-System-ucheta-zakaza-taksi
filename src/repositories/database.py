@@ -15,17 +15,17 @@ def restore_db():
 
     cursor = conn.cursor()
 
-    # 1. Удаляем всё в правильном порядке (от зависимых к главным)
+
+    cursor.execute("DROP TABLE IF EXISTS Reviews;")
     cursor.execute("DROP TABLE IF EXISTS Orders;")
     cursor.execute("DROP TABLE IF EXISTS Users;")
     cursor.execute("DROP TABLE IF EXISTS Status;")
     cursor.execute("DROP TABLE IF EXISTS UserRoles;")
     cursor.execute("DROP TYPE IF EXISTS order_status_enum;")
 
-    # 2. Создаем ENUM
-    cursor.execute("CREATE TYPE order_status_enum AS ENUM ('free', 'in_progress', 'cancelled', 'completed');")
 
-    # 3. Создаем независимые таблицы (справочники)
+
+
     cursor.execute("CREATE TABLE UserRoles (id SERIAL PRIMARY KEY, role VARCHAR(255));")
     cursor.execute("""
         CREATE TABLE Status (
@@ -34,7 +34,7 @@ def restore_db():
         );
     """)
 
-    # 4. Создаем Users (зависит от UserRoles)
+
     cursor.execute("""
         CREATE TABLE Users (
             id SERIAL PRIMARY KEY, 
@@ -46,16 +46,26 @@ def restore_db():
         );
     """)
 
-    # 5. И только ТЕПЕРЬ создаем Orders (зависит от Users)
+
     cursor.execute("""
         CREATE TABLE Orders (
             id SERIAL PRIMARY KEY,
             userID INTEGER REFERENCES Users(id),
             price FLOAT,
             driverID INTEGER REFERENCES Users(id),
-            orderStatus order_status_enum DEFAULT 'free' 
+            address VARCHAR(255),
+            orderStatus INTEGER DEFAULT 1 
         );
     """)
+
+    cursor.execute("""
+            CREATE TABLE Reviews (
+                id SERIAL PRIMARY KEY,
+                orderID INTEGER REFERENCES Orders(id),
+                userID INTEGER REFERENCES Users(id),
+                rating INTEGER CHECK (rating >= 1 AND rating <= 5)
+            );
+        """)
 
     conn.commit()
     cursor.close()
