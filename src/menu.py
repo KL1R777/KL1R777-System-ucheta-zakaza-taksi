@@ -171,7 +171,8 @@ def driver_menu(user):
                 order_service.completed_order(id=oid, driverID=user.id)
             except ValueError:
                 print("Номер должен быть числом.")
-
+        elif choice == "0":
+            break
 
 
 def run_app():
