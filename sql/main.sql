@@ -28,3 +28,10 @@ CREATE TABLE Orders (
     driverID INTEGER REFERENCES Users(id),
     orderStatus INTEGER REFERENCES Status(id)
 );
+
+CREATE TABLE Reviews (
+    id INTEGER PRIMARY KEY,
+    userID INTEGER REFERENCES Users(id),
+    orderID INTEGER REFERENCES Orders(id),
+    rating INTEGER CHECK (rating >= 1 AND rating <= 5)
+);
