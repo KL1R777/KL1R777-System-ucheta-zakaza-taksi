@@ -53,7 +53,7 @@ def take_order(id: int, driverID: int) -> bool:
 
 
     order_repo.take_order(id=id, driverID=driverID)
-    print(f"✅ Водитель {driverID} успешно взял заказ №{id}!")
+    print(f"Водитель {driverID} успешно взял заказ №{id}!")
     return True
 
 

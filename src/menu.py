@@ -78,7 +78,7 @@ def passenger_menu(user):
                 oid = int(input("Введите номер заказа: "))
                 order_service.check_status(oid)
             except ValueError:
-                print("❌ Номер должен быть числом.")
+                print("Номер должен быть числом.")
 
         elif choice == "4":
             try:
