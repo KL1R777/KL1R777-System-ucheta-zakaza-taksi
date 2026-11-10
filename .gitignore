@@ -1,4 +1,4 @@
 *.exe
 .idea
-
+out/
 __pycache__
