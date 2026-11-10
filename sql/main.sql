@@ -1,18 +1,15 @@
-
 CREATE TABLE UserRoles (
-    id INTEGER PRIMARY KEY,
+    id SERIAL PRIMARY KEY,
     role VARCHAR(255)
 );
 
-
 CREATE TABLE Status (
-    id INTEGER PRIMARY KEY,
-    status VARCHAR(255)
+    id SERIAL PRIMARY KEY,
+    status VARCHAR(50) CHECK (status IN ('free', 'in_progress', 'cancelled', 'completed'))
 );
 
-
 CREATE TABLE Users (
-    id INTEGER PRIMARY KEY,
+    id SERIAL PRIMARY KEY,
     email VARCHAR(255),
     name VARCHAR(255),
     hashed_password VARCHAR(255),
@@ -20,17 +17,17 @@ CREATE TABLE Users (
     money FLOAT
 );
 
-
 CREATE TABLE Orders (
-    id INTEGER PRIMARY KEY,
+    id SERIAL PRIMARY KEY,
     userID INTEGER REFERENCES Users(id),
     price FLOAT,
     driverID INTEGER REFERENCES Users(id),
-    orderStatus INTEGER REFERENCES Status(id)
+    address VARCHAR(255),
+    orderStatus INTEGER DEFAULT 1 REFERENCES Status(id)
 );
 
 CREATE TABLE Reviews (
-    id INTEGER PRIMARY KEY,
+    id SERIAL PRIMARY KEY,
     userID INTEGER REFERENCES Users(id),
     orderID INTEGER REFERENCES Orders(id),
     rating INTEGER CHECK (rating >= 1 AND rating <= 5)

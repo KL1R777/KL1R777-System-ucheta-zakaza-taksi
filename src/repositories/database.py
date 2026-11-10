@@ -1,77 +1,42 @@
 import psycopg2
 import time
+from pathlib import Path
+
+
+PROJECT_ROOT = Path(__file__).resolve().parents[2]
+SQL_FILE = PROJECT_ROOT / "sql" / "main.sql"
 
 
 def restore_db():
     time.sleep(2)
 
-    conn = psycopg2.connect(
-        dbname="mydatabase",
-        user="myuser",
-        password="mypassword",
-        host="localhost",
-        port="5432"
-    )
+    if not SQL_FILE.exists():
+        raise FileNotFoundError(f"Не найден SQL-файл: {SQL_FILE}")
 
+    with open(SQL_FILE, "r", encoding="utf-8") as f:
+        sql_script = f.read()
+
+    conn = get_connection()
     cursor = conn.cursor()
 
-
-    cursor.execute("DROP TABLE IF EXISTS Reviews;")
-    cursor.execute("DROP TABLE IF EXISTS Orders;")
-    cursor.execute("DROP TABLE IF EXISTS Users;")
-    cursor.execute("DROP TABLE IF EXISTS Status;")
-    cursor.execute("DROP TABLE IF EXISTS UserRoles;")
-    cursor.execute("DROP TYPE IF EXISTS order_status_enum;")
-
-
-
-
-    cursor.execute("CREATE TABLE UserRoles (id SERIAL PRIMARY KEY, role VARCHAR(255));")
+    
     cursor.execute("""
-        CREATE TABLE Status (
-            id SERIAL PRIMARY KEY,
-            status VARCHAR(50) CHECK (status IN ('free', 'in_progress', 'cancelled', 'completed'))
-        );
+        DROP TABLE IF EXISTS Reviews CASCADE;
+        DROP TABLE IF EXISTS Orders CASCADE;
+        DROP TABLE IF EXISTS Users CASCADE;
+        DROP TABLE IF EXISTS Status CASCADE;
+        DROP TABLE IF EXISTS UserRoles CASCADE;
+        DROP TYPE IF EXISTS order_status_enum CASCADE;
     """)
 
-
-    cursor.execute("""
-        CREATE TABLE Users (
-            id SERIAL PRIMARY KEY, 
-            email VARCHAR(255), 
-            name VARCHAR(255), 
-            hashed_password VARCHAR(255), 
-            userRole INTEGER REFERENCES UserRoles(id), 
-            money FLOAT
-        );
-    """)
-
-
-    cursor.execute("""
-        CREATE TABLE Orders (
-            id SERIAL PRIMARY KEY,
-            userID INTEGER REFERENCES Users(id),
-            price FLOAT,
-            driverID INTEGER REFERENCES Users(id),
-            address VARCHAR(255),
-            orderStatus INTEGER DEFAULT 1 
-        );
-    """)
-
-    cursor.execute("""
-            CREATE TABLE Reviews (
-                id SERIAL PRIMARY KEY,
-                orderID INTEGER REFERENCES Orders(id),
-                userID INTEGER REFERENCES Users(id),
-                rating INTEGER CHECK (rating >= 1 AND rating <= 5)
-            );
-        """)
+    
+    cursor.execute(sql_script)
 
     conn.commit()
     cursor.close()
     conn.close()
 
-    print("База создана. Таблицы: UserRoles, Status, Users, Orders.")
+    print(f"База создана из {SQL_FILE}")
 
 
 def get_connection():
