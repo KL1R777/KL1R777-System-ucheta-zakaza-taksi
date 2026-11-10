@@ -1,4 +1,7 @@
 *.exe
 .idea
-out/
+*.json
+*.xml
+*.csv
+*.yaml
 __pycache__
